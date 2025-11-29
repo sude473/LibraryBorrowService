@@ -36,7 +36,7 @@ public class BorrowServiceImpl implements IBorrowService {
 
             System.err.println("ERROR: " + e.getMessage());
 
-            return true;
+            return false;
         }
     }
 }
