@@ -1,7 +1,14 @@
 package com.group12.libraryborrowservice.dto;
 
 import java.time.LocalDateTime;
-
+/**
+ * Data Transfer Object used to send a structured JSON response to the client.
+ *
+ * It contains:
+ *  - status: SUCCESS / ERROR / FAILED
+ *  - message: Explanation for the client
+ *  - transactionId: Optional tracking id for the operation
+ */
 public class BorrowResponse {
     private String status;
     private String message;
