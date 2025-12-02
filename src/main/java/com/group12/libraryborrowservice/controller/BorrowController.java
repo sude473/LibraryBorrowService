@@ -7,21 +7,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
-
+/**
+ * REST API controller for handling borrow operations.
+ *
+ * This class represents the API LAYER of the system.
+ * It exposes HTTP endpoints and delegates the work to the service layer.
+ */
 @RestController
 @RequestMapping("/api/borrow")
 public class BorrowController {
-
+// Service layer dependency (business logic)
     private final IBorrowService borrowService;
 
     // Constructor Injection
     public BorrowController(IBorrowService borrowService) {
         this.borrowService = borrowService;
     }
-
+ /**
+     * POST /api/borrow
+     *
+     * Accepts a JSON body (BorrowRequest) and starts the borrow process.
+     * Returns a professional JSON response (BorrowResponse).
+     */
     @PostMapping
     public ResponseEntity<BorrowResponse> borrowBook(@RequestBody BorrowRequest request) {
-        // 1. Simple Validation
+       // 1. Simple validation for incoming request
         if (request.getUserId() == null || request.getBookId() == null) {
             return ResponseEntity.badRequest()
                     .body(new BorrowResponse("FAILED", "ERROR: userId and bookId are required!", null));
@@ -43,6 +53,7 @@ public class BorrowController {
 
             return ResponseEntity.ok(response);
         } else {
+             // If service returns false, respond with 500 Internal Server Error
             return ResponseEntity.status(500)
                     .body(new BorrowResponse("ERROR", "An internal error occurred.", null));
         }
