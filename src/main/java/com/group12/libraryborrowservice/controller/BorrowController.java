@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
+
 /**
  * REST API controller for handling borrow operations.
  *
@@ -16,14 +17,16 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/borrow")
 public class BorrowController {
-// Service layer dependency (business logic)
+
+    // Service layer dependency (business logic)
     private final IBorrowService borrowService;
 
     // Constructor Injection
     public BorrowController(IBorrowService borrowService) {
         this.borrowService = borrowService;
     }
- /**
+
+    /**
      * POST /api/borrow
      *
      * Accepts a JSON body (BorrowRequest) and starts the borrow process.
@@ -31,10 +34,13 @@ public class BorrowController {
      */
     @PostMapping
     public ResponseEntity<BorrowResponse> borrowBook(@RequestBody BorrowRequest request) {
-       // 1. Simple validation for incoming request
+
+        // 1. Simple validation for incoming request
         if (request.getUserId() == null || request.getBookId() == null) {
             return ResponseEntity.badRequest()
-                    .body(new BorrowResponse("FAILED", "ERROR: userId and bookId are required!", null));
+                    .body(new BorrowResponse("FAILED",
+                            "ERROR: userId and bookId are required!",
+                            null));
         }
 
         // 2. Service Call (Business Logic)
@@ -42,7 +48,6 @@ public class BorrowController {
 
         // 3. Return Professional JSON Response with Transaction ID
         if (result) {
-            // Generate a random unique ID for tracking (Simulation)
             String trackingId = UUID.randomUUID().toString();
 
             BorrowResponse response = new BorrowResponse(
@@ -53,9 +58,21 @@ public class BorrowController {
 
             return ResponseEntity.ok(response);
         } else {
-             // If service returns false, respond with 500 Internal Server Error
             return ResponseEntity.status(500)
-                    .body(new BorrowResponse("ERROR", "An internal error occurred.", null));
+                    .body(new BorrowResponse("ERROR",
+                            "An internal error occurred.",
+                            null));
         }
+    }
+
+    /**
+     * GET /api/borrow
+     *
+     * This prevents users from seeing the white-label error page.
+     * It shows a friendly message instead of 404 or 405.
+     */
+    @GetMapping
+    public String borrowInfo() {
+        return "This endpoint only supports POST. Please send a POST request to /api/borrow.";
     }
 }
